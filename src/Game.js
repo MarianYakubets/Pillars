@@ -51,7 +51,6 @@ BasicGame.Game.prototype = {
                     var hexagon = this.game.add.sprite(hexagonX, hexagonY, "hex1");
                     hexagon.inputEnabled = true;
                     hexagon.events.onInputDown.add(this.animate(hexagon), this);
-
                     hexagonGroup.add(hexagon);
                 }
             }
@@ -64,10 +63,13 @@ BasicGame.Game.prototype = {
         var tile = tileObj;
         var game = this.game;
         return function() {
-            game.add.tween(tile.scale).to({
+            var tween = game.add.tween(tile.scale).to({
                 x: -1,
                 y: 1
             }, 1000, Phaser.Easing.None, true);
+            tween.onComplete.add(function(){
+                tileObj.destroy();
+            }, this);
         }
     },
 
