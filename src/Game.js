@@ -24,7 +24,16 @@ BasicGame.Game = function(game) {
     //	But do consider them as being 'reserved words', i.e. 
     //  don't create a property for your own game called "world" or you'll over-write 
     //  the world reference.
+    this.mapWidth = 4;
+    this.mapHeight = 4;
+    this.hexagonHeight = 140;
+    this.hexagonSide = this.hexagonHeight / 2;
+    this.startPoint = new Point(100, 100);
+    this.layout = new Layout(layout_pointy, new Point(this.hexagonSide, this.hexagonSide), this.startPoint);
 
+
+    //temp
+    this.hex;
 };
 
 BasicGame.Game.prototype = {
@@ -32,48 +41,54 @@ BasicGame.Game.prototype = {
 
 
     create: function() {
-        var hexagonWidth = 120;
-        var hexagonHeight = 140;
-        var gridSizeX = 15;
-        var gridSizeY = 7;
-        var columns = [Math.ceil(gridSizeX / 2), Math.floor(gridSizeX / 2)];
-        var moveIndex;
-        var sectorWidth = hexagonWidth;
-        var sectorHeight = hexagonHeight / 4 * 3;
-        var gradient = (hexagonHeight / 4) / (hexagonWidth / 2);
-        var marker;
-        var hexagonGroup;
+        var hexagonGroup = this.game.add.group();
 
-        hexagonGroup = this.game.add.group();
-        hexagonGroup.inputEnabled = true;
-        this.game.stage.backgroundColor = "#ffffff"
-        for (var i = 0; i < gridSizeY / 2; i++) {
-            for (var j = 0; j < gridSizeX; j++) {
-                if (gridSizeY % 2 == 0 || i + 1 < gridSizeY / 2 || j % 2 == 0) {
-                    var hexagonX = hexagonWidth * j / 2;
-                    var hexagonY = hexagonHeight * i * 1.5 + (hexagonHeight / 4 * 3) * (j % 2);
-                    var hexagon = this.game.add.sprite(hexagonX, hexagonY, "hex1");
-                    hexagon.inputEnabled = true;
-                    hexagon.events.onInputDown.add(this.animate(hexagon), this);
-                    hexagonGroup.add(hexagon);
-                }
+        var map = [];
+        for (var r = 0; r < this.mapHeight; r++) {
+            var r_offset = Math.floor(r / 2);
+            for (var q = -r_offset; q < this.mapWidth - r_offset; q++) {
+                map.push(new Hex(q, r, -q - r));
             }
         }
 
+        var style = {
+            font: "32px Arial",
+            wordWrap: true,
+            align: "center",
+        };
 
+        map.forEach(function(item, i, arr) {
+            var coordinate = hex_to_pixel(this.layout, item);
+            var hexagon = this.game.add.sprite(coordinate.x, coordinate.y, "hex2");
+            hexagon.inputEnabled = true;
+            hexagon.events.onInputDown.add(this.onHexClick(hexagon), this);
+            hexagonGroup.add(hexagon);
+
+            var text = this.game.add.text(coordinate.x + this.hexagonSide, coordinate.y + this.hexagonSide, "1", style);
+            text.anchor.set(0.5);
+        }, this);
     },
 
-    animate: function(tileObj) {
-        var tile = tileObj;
+    onHexClick: function(obj) {
+        var hex = obj;
         var game = this.game;
         return function() {
-            var tween = game.add.tween(tile.scale).to({
-                x: -1,
-                y: 1
-            }, 1000, Phaser.Easing.None, true);
-            tween.onComplete.add(function(){
-                tileObj.destroy();
-            }, this);
+            if (this.hex == null) {
+                this.hex = hex;
+            } else {
+                var tileOld = pixel_to_hex(this.layout, new Point(this.hex.x, this.hex.y));
+                var tileNew = pixel_to_hex(this.layout, new Point(hex.x, hex.y));
+                if (Math.abs(hex_distance(tileOld, tileNew)) <= 1) {
+                    var tween = game.add.tween(this.hex).to({
+                        x: hex.x,
+                        y: hex.y
+                    }, 1000, Phaser.Easing.None, true);
+                    tween.onComplete.add(function() {
+                        hex.destroy();
+                    }, this);
+                }
+                this.hex = null;
+            }
         }
     },
 
