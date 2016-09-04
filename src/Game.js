@@ -1,4 +1,4 @@
-BasicGame.Game = function(game) {
+BasicGame.Game = function (game) {
 
     //	When a State is added to Phaser it automatically has the following properties set on it, 
     //  even if they already exist:
@@ -34,13 +34,13 @@ BasicGame.Game = function(game) {
 
     //temp
     this.hex;
+    this.textMap;
 };
 
 BasicGame.Game.prototype = {
 
 
-
-    create: function() {
+    create: function () {
         var hexagonGroup = this.game.add.group();
 
         var map = [];
@@ -57,7 +57,9 @@ BasicGame.Game.prototype = {
             align: "center",
         };
 
-        map.forEach(function(item, i, arr) {
+        this.textMap = new TileMap();
+
+        map.forEach(function (item, i, arr) {
             var coordinate = hex_to_pixel(this.layout, item);
             var hexagon = this.game.add.sprite(coordinate.x, coordinate.y, "hex2");
             hexagon.inputEnabled = true;
@@ -66,24 +68,27 @@ BasicGame.Game.prototype = {
 
             var text = this.game.add.text(coordinate.x + this.hexagonSide, coordinate.y + this.hexagonSide, "1", style);
             text.anchor.set(0.5);
+
+            this.textMap.set(hexagon, text);
         }, this);
     },
 
-    onHexClick: function(obj) {
+    onHexClick: function (obj) {
         var hex = obj;
         var game = this.game;
-        return function() {
+        return function () {
             if (this.hex == null) {
                 this.hex = hex;
             } else {
                 var tileOld = pixel_to_hex(this.layout, new Point(this.hex.x, this.hex.y));
                 var tileNew = pixel_to_hex(this.layout, new Point(hex.x, hex.y));
+                this.textMap;
                 if (Math.abs(hex_distance(tileOld, tileNew)) <= 1) {
                     var tween = game.add.tween(this.hex).to({
                         x: hex.x,
                         y: hex.y
                     }, 1000, Phaser.Easing.None, true);
-                    tween.onComplete.add(function() {
+                    tween.onComplete.add(function () {
                         hex.destroy();
                     }, this);
                 }
@@ -92,14 +97,14 @@ BasicGame.Game.prototype = {
         }
     },
 
-    update: function() {
+    update: function () {
 
         //	Honestly, just about anything could go here. It's YOUR game after all. 
         //  Eat your heart out!
 
     },
 
-    quitGame: function(pointer) {
+    quitGame: function (pointer) {
 
         //	Here you should destroy anything you no longer need.
         //	Stop music, delete sprites, purge caches, free resources, all that good stuff.
