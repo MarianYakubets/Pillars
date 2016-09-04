@@ -1,44 +1,57 @@
 function Tile() {
-	return {
-		size: 1,
-		top: "",
-		bottom: ""
-	};
+    return {
+        size: 1,
+        top: "",
+        bottom: ""
+    };
 }
 
 function TileMap() {
-	return {
-		size: 0,
-		bucket:[]
-	};
+    return {
+        size: 0,
+        bucket: {}
+    };
 }
 
 TileMap.prototype = {
-	set: function(key, value) {
+    set: function (key, value) {
+        this.size++;
+        this.bucket[hexToNumber(key)] = value;
+    },
 
-	},
+    get: function (key) {
+        return this.bucket[hexToNumber(key)];
+    },
 
-	get: function(key) {
+    has: function (key) {
+        return this.bucket.hasOwnProperty(hexToNumber(key));
+    },
 
-	},
+    delete: function (key) {
+        delete this.bucket.hasOwnProperty(hexToNumber(key));
+    },
 
-	has: function(key) {
+    keys: function () {
+        return Object.keys(this.bucket);
 
-	},
+    },
 
-	delete: function(key) {
+    values: function () {
 
-	},
+    },
 
-	keys: function(){
+    entries: function () {
 
-	},
-
-	values: function (){
-
-	},
-
-	entries: function (){
-
-	}
+    }
 };
+
+function hexToNumber(hex) {
+    return 100000 * hex.q + 1000 * hex.r + hex.s;
+}
+
+function numberToHex(number) {
+    var q = Math.ceil(number / 100000);
+    var r = Math.ceil((number - q) / 1000);
+    var s = Math.ceil(number - q - r);
+    return new Hex(q, r, s);
+}
