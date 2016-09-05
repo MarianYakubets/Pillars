@@ -69,7 +69,7 @@ BasicGame.Game.prototype = {
             var text = this.game.add.text(coordinate.x + this.hexagonSide, coordinate.y + this.hexagonSide, "1", style);
             text.anchor.set(0.5);
 
-            this.textMap.set(hexagon, text);
+            this.textMap.set(item, text);
         }, this);
     },
 

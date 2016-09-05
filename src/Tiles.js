@@ -7,13 +7,12 @@ function Tile() {
 }
 
 function TileMap() {
-    return {
-        size: 0,
-        bucket: {}
-    };
+    this.size = 0;
+    this.bucket = {};
 }
 
 TileMap.prototype = {
+
     set: function (key, value) {
         this.size++;
         this.bucket[hexToNumber(key)] = value;
