@@ -54,7 +54,7 @@ BasicGame.Game.prototype = {
         var style = {
             font: "32px Arial",
             wordWrap: true,
-            align: "center",
+            align: "center"
         };
 
         this.textMap = new TileMap();
@@ -82,7 +82,11 @@ BasicGame.Game.prototype = {
             } else {
                 var tileOld = pixel_to_hex(this.layout, new Point(this.hex.x, this.hex.y));
                 var tileNew = pixel_to_hex(this.layout, new Point(hex.x, hex.y));
-                this.textMap;
+                var textOld = this.textMap.get(tileOld);
+                var textNew = this.textMap.get(tileNew);
+                textOld.destroy();
+                var number = textNew.getText();
+                textNew.setText(number);
                 if (Math.abs(hex_distance(tileOld, tileNew)) <= 1) {
                     var tween = game.add.tween(this.hex).to({
                         x: hex.x,
