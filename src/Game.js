@@ -26,7 +26,7 @@ BasicGame.Game = function (game) {
     //  the world reference.
     this.mapWidth = 4;
     this.mapHeight = 4;
-    this.hexagonHeight = 140;
+    this.hexagonHeight = 89;
     this.hexagonSide = this.hexagonHeight / 2;
     this.startPoint = new Point(100, 100);
     this.layout = new Layout(layout_pointy, new Point(this.hexagonSide, this.hexagonSide), this.startPoint);
@@ -52,7 +52,7 @@ BasicGame.Game.prototype = {
         }
 
         var style = {
-            font: "32px Arial",
+            font: "20px Arial",
             wordWrap: true,
             align: "center"
         };
@@ -61,7 +61,7 @@ BasicGame.Game.prototype = {
 
         map.forEach(function (item, i, arr) {
             var coordinate = hex_to_pixel(this.layout, item);
-            var hexagon = this.game.add.sprite(coordinate.x, coordinate.y, "hex2");
+            var hexagon = this.game.add.sprite(coordinate.x, coordinate.y, "hexWood");
             hexagon.inputEnabled = true;
             hexagon.events.onInputDown.add(this.onHexClick(hexagon), this);
             hexagonGroup.add(hexagon);
@@ -84,9 +84,10 @@ BasicGame.Game.prototype = {
                 var tileNew = pixel_to_hex(this.layout, new Point(hex.x, hex.y));
                 var textOld = this.textMap.get(tileOld);
                 var textNew = this.textMap.get(tileNew);
-                textOld.destroy();
-                var number = textNew.getText();
-                textNew.setText(number);
+                var oldNumber = textOld.text;
+                var newNumber = textNew.text;
+                var tile = this.hex;
+
                 if (Math.abs(hex_distance(tileOld, tileNew)) <= 1) {
                     var tween = game.add.tween(this.hex).to({
                         x: hex.x,
@@ -94,6 +95,9 @@ BasicGame.Game.prototype = {
                     }, 1000, Phaser.Easing.None, true);
                     tween.onComplete.add(function () {
                         hex.destroy();
+                        tile.tint =  Math.random() * 0xffffff;
+                        textOld.destroy();
+                        textNew.setText(+newNumber + (+oldNumber));
                     }, this);
                 }
                 this.hex = null;

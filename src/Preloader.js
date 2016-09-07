@@ -30,6 +30,8 @@ BasicGame.Preloader.prototype = {
 		//this.load.bitmapFont('caslon', 'fonts/caslon.png', 'fonts/caslon.xml');
 		this.load.image('hex1', 'images/hex1.png');
 		this.load.image('hex2', 'images/hex2.png');
+		this.load.image('hexRock', 'images/hexRock.png');
+		this.load.image('hexWood', 'images/hexWood.png');
 		//	+ lots of other required assets here
 
 	},
