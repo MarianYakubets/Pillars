@@ -29,10 +29,18 @@ function hex_scale(a, k) {
 }
 
 var hex_directions = [Hex(1, 0, -1), Hex(1, -1, 0), Hex(0, -1, 1),
- Hex(-1, 0, 1), Hex(-1, 1, 0), Hex(0, 1, -1)];
+    Hex(-1, 0, 1), Hex(-1, 1, 0), Hex(0, 1, -1)];
 
 function hex_direction(direction) {
     return hex_directions[direction];
+}
+
+function hex_direction_side(hex1, hex2) {
+    var hex = hex_add(hex1, hex2);
+    hex.q = hex.q / 2;
+    hex.r = hex.r / 2;
+    hex.s = hex.s / 2;
+    return hex;
 }
 
 function hex_neighbor(hex, direction) {
@@ -40,7 +48,7 @@ function hex_neighbor(hex, direction) {
 }
 
 var hex_diagonals = [Hex(2, -1, -1), Hex(1, -2, 1), Hex(-1, -1, 2),
- Hex(-2, 1, 1), Hex(-1, 2, -1), Hex(1, 1, -2)];
+    Hex(-2, 1, 1), Hex(-1, 2, -1), Hex(1, 1, -2)];
 
 function hex_diagonal_neighbor(hex, direction) {
     return hex_add(hex, hex_diagonals[direction]);
@@ -63,8 +71,7 @@ function hex_round(h) {
     var s_diff = Math.abs(s - h.s);
     if (q_diff > r_diff && q_diff > s_diff) {
         q = -r - s;
-    } else
-    if (r_diff > s_diff) {
+    } else if (r_diff > s_diff) {
         r = -q - s;
     } else {
         s = -q - r;
@@ -87,7 +94,6 @@ function hex_linedraw(a, b) {
     }
     return results;
 }
-
 
 
 function OffsetCoord(col, row) {
@@ -127,7 +133,6 @@ function roffset_to_cube(offset, h) {
 }
 
 
-
 function Orientation(f0, f1, f2, f3, b0, b1, b2, b3, start_angle) {
     return {
         f0: f0,
@@ -143,7 +148,6 @@ function Orientation(f0, f1, f2, f3, b0, b1, b2, b3, start_angle) {
 }
 
 
-
 function Layout(orientation, size, origin) {
     return {
         orientation: orientation,
@@ -152,9 +156,9 @@ function Layout(orientation, size, origin) {
     };
 }
 
-var layout_pointy = Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, 
+var layout_pointy = Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0,
     Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
-var layout_flat = Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, 
+var layout_flat = Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0,
     Math.sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0);
 
 function hex_to_pixel(layout, h) {

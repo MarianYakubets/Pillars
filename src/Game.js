@@ -82,20 +82,25 @@ BasicGame.Game.prototype = {
             } else {
                 var tileOld = pixel_to_hex(this.layout, new Point(this.hex.x, this.hex.y));
                 var tileNew = pixel_to_hex(this.layout, new Point(hex.x, hex.y));
+
+                var middleHex = hex_direction_side(tileOld, tileNew);
+                middleHex = hex_to_pixel(this.layout, middleHex);
+
                 var textOld = this.textMap.get(tileOld);
                 var textNew = this.textMap.get(tileNew);
                 var oldNumber = textOld.text;
                 var newNumber = textNew.text;
                 var tile = this.hex;
 
+
                 if (Math.abs(hex_distance(tileOld, tileNew)) <= 1) {
                     var tween = game.add.tween(this.hex).to({
-                        x: hex.x,
-                        y: hex.y
+                        x: middleHex.x,
+                        y: middleHex.y
                     }, 1000, Phaser.Easing.None, true);
                     tween.onComplete.add(function () {
                         hex.destroy();
-                        tile.tint =  Math.random() * 0xffffff;
+                        tile.tint = Math.random() * 0xffffff;
                         textOld.destroy();
                         textNew.setText(+newNumber + (+oldNumber));
                     }, this);
