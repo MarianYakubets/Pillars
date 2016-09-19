@@ -52,7 +52,7 @@ BasicGame.Game.prototype = {
         }
 
         var style = {
-            font: "20px Arial",
+            font: "19px Arial",
             wordWrap: true,
             align: "center"
         };
