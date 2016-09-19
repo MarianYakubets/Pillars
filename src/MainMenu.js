@@ -1,4 +1,3 @@
-
 BasicGame.MainMenu = function (game) {
 
 	this.music = null;
