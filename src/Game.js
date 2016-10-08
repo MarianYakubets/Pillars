@@ -42,9 +42,9 @@ BasicGame.Game.prototype = {
 
     create: function () {
         var hexagonGroup = this.game.add.group();
-
         var map = [];
         for (var r = 0; r < this.mapHeight; r++) {
+            ß
             var r_offset = Math.floor(r / 2);
             for (var q = -r_offset; q < this.mapWidth - r_offset; q++) {
                 map.push(new Hex(q, r, -q - r));
@@ -94,16 +94,28 @@ BasicGame.Game.prototype = {
 
 
                 if (Math.abs(hex_distance(tileOld, tileNew)) <= 1) {
-                    var tween = game.add.tween(this.hex).to({
-                        x: middleHex.x,
-                        y: middleHex.y
+
+                    var tween1 = game.add.tween(this.hex.scale).to({
+                        x: -1,
+                        y: 1
                     }, 1000, Phaser.Easing.None, true);
-                    tween.onComplete.add(function () {
+                    var tween2 = game.add.tween(this.hex.scale).to({
+                        x: 1,
+                        y: 1
+                    }, 1000, Phaser.Easing.None, true);
+                    var tween3 = game.add.tween(this.hex).to({
+                        x: hex.x,
+                        y: hex.y
+                    }, 1000, Phaser.Easing.None, true);
+                    tween1.chain(tween2);
+                    tween2.chain(tween3);
+
+                    /*tween3.onComplete.add(function () {
                         hex.destroy();
                         tile.tint = Math.random() * 0xffffff;
                         textOld.destroy();
                         textNew.setText(+newNumber + (+oldNumber));
-                    }, this);
+                    }, this);*/
                 }
                 this.hex = null;
             }
